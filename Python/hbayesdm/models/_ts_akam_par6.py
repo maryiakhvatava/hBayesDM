@@ -7,14 +7,14 @@ import pandas as pd
 from hbayesdm.base import TaskModel
 from hbayesdm.preprocess_funcs import ts_preprocess_func
 
-__all__ = ['ts_akam_par6_trial']
+__all__ = ['ts_akam_par6']
 
 
-class TsAkamPar6Trial(TaskModel):
+class TsAkamPar6(TaskModel):
     def __init__(self, **kwargs):
         super().__init__(
             task_name='ts',
-            model_name='akam_par6_trial',
+            model_name='akam_par6',
             model_type='',
             data_columns=(
                 'subjID',
@@ -26,6 +26,7 @@ class TsAkamPar6Trial(TaskModel):
                 ('a1', (0, 0.5, 1)),
                 ('beta1', (0, 1, Inf)),
                 ('a2', (0, 0.5, 1)),
+                ('beta2', (0, 1, Inf)),
                 ('pi', (0, 1, 5)),
                 ('w', (0, 0.5, 1)),
             ]),
@@ -34,11 +35,12 @@ class TsAkamPar6Trial(TaskModel):
                 ('mb_RPE', 2),
                 ('mfb_RPE', 2),
             ]),
-            postpreds=['y_pred_step1'],
+            postpreds=['y_pred_step1', 'y_pred_step2'],
             parameters_desc=OrderedDict([
                 ('a1', 'learning rate in stage 1'),
                 ('beta1', 'inverse temperature in stage 1'),
                 ('a2', 'learning rate in stage 2'),
+                ('beta2', 'inverse temperature in stage 2'),
                 ('pi', 'perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)'),
                 ('w', 'model-based weight'),
             ]),
@@ -54,7 +56,7 @@ class TsAkamPar6Trial(TaskModel):
     _preprocess_func = ts_preprocess_func
 
 
-def ts_akam_par6_trial(
+def ts_akam_par6(
         data: Union[pd.DataFrame, str, None] = None,
         niter: int = 4000,
         nwarmup: int = 1000,
@@ -74,7 +76,7 @@ def ts_akam_par6_trial(
 
     Hierarchical Bayesian Modeling of the Two-Step Task [Daw2011]_
     using Hybrid Model for reduced task [Akam2015]_ with the following parameters:
-    "a1" (learning rate in stage 1), "beta1" (inverse temperature in stage 1), "a2" (learning rate in stage 2), "pi" (perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)), "w" (model-based weight).
+    "a1" (learning rate in stage 1), "beta1" (inverse temperature in stage 1), "a2" (learning rate in stage 2), "beta2" (inverse temperature in stage 2), "pi" (perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)), "w" (model-based weight).
 
     
 
@@ -199,7 +201,7 @@ def ts_akam_par6_trial(
     model_data
         An ``hbayesdm.TaskModel`` instance with the following components:
 
-        - ``model``: String value that is the name of the model ('ts_akam_par6_trial').
+        - ``model``: String value that is the name of the model ('ts_akam_par6').
         - ``all_ind_pars``: Pandas DataFrame containing the summarized parameter values
           (as specified by ``ind_pars``) for each subject.
         - ``par_vals``: OrderedDict holding the posterior samples over different parameters.
@@ -214,10 +216,10 @@ def ts_akam_par6_trial(
     .. code:: python
 
         from hbayesdm import rhat, print_fit
-        from hbayesdm.models import ts_akam_par6_trial
+        from hbayesdm.models import ts_akam_par6
 
         # Run the model and store results in "output"
-        output = ts_akam_par6_trial(data='example', niter=2000, nwarmup=1000, nchain=4, ncore=4)
+        output = ts_akam_par6(data='example', niter=2000, nwarmup=1000, nchain=4, ncore=4)
 
         # Visually check convergence of the sampling chains (should look like "hairy caterpillars")
         output.plot(type='trace')
@@ -231,7 +233,7 @@ def ts_akam_par6_trial(
         # Show the LOOIC and WAIC model fit estimates
         print_fit(output)
     """
-    return TsAkamPar6Trial(
+    return TsAkamPar6(
         data=data,
         niter=niter,
         nwarmup=nwarmup,

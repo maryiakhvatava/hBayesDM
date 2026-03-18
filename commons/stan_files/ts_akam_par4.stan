@@ -112,7 +112,7 @@ model {
 
       // Value updates after observing the level-2 choice and reward
       // Update level-1 MF for the chosen first-stage stimulus using chosen level2 value
-      //v_mf[level1_choice[i,t]] += a[i] * ( v_mf[2 + level2_choice[i,t]] - v_mf[level1_choice[i,t]] );
+      v_mf[level1_choice[i,t]] += a[i] * ( v_mf[2 + level2_choice[i,t]] - v_mf[level1_choice[i,t]] );
 
       // Update the chosen level-2 MF value with the experienced reward
       v_mf[2 + level2_choice[i,t]] += a[i] * ( reward[i,t] - v_mf[2 + level2_choice[i,t]] );
@@ -208,7 +208,7 @@ generated quantities {
       mfb_RPE[i, t] = mf_RPE[i, t] - mb_RPE[i, t];
 
       // MF updates
-      //v_mf[level1_choice[i,t]] += a[i] * ( v_mf[2 + level2_choice[i,t]] - v_mf[level1_choice[i,t]] );
+      v_mf[level1_choice[i,t]] += a[i] * ( v_mf[2 + level2_choice[i,t]] - v_mf[level1_choice[i,t]] );
       v_mf[2 + level2_choice[i,t]] += a[i] * ( reward[i,t] - v_mf[2 + level2_choice[i,t]] );
       v_mf[level1_choice[i,t]] += a[i] * ( reward[i,t] - v_mf[2 + level2_choice[i,t]] );
               
