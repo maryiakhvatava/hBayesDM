@@ -7,7 +7,7 @@ task_name:
       Neuron, 69(6), 1204-1215. https://doi.org/10.1016/j.neuron.2011.02.027
 
 model_name:
-  code: akam_par6_trial
+  code: akam_par5_trial
   desc: Hybrid Model for reduced task
   cite:
     - Akam, T., Costa, R., & Dayan, P. (2015).
