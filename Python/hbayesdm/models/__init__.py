@@ -60,6 +60,7 @@ from ._ts_akam_par4 import ts_akam_par4
 from ._ts_akam_par4_trial import ts_akam_par4_trial
 from ._ts_akam_par5_trial import ts_akam_par5_trial
 from ._ts_akam_par6 import ts_akam_par6
+from ._ts_akam_par6_trial import ts_akam_par6_trial
 from ._ts_akam_par7 import ts_akam_par7
 from ._ts_akam_par7_trial import ts_akam_par7_trial
 from ._ts_par4 import ts_par4
@@ -135,6 +136,7 @@ __all__ = [
     'ts_akam_par4_trial',
     'ts_akam_par5_trial',
     'ts_akam_par6',
+    'ts_akam_par6_trial',
     'ts_akam_par7',
     'ts_akam_par7_trial',
     'ts_par4',

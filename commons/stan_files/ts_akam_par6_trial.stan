@@ -114,10 +114,10 @@ model {
       level1_choice_01 ~ bernoulli( level1_prob_choice2 );
 
       // Level-2 choice probability & likelihood (CHANGED 1..2)
-       //level2_choice_01 = level2_choice[i,t] - 1; // 1->0, 2->1
+       level2_choice_01 = level2_choice[i,t] - 1; // 1->0, 2->1
       // Softmax/logit comparing the two second-stage action values (indices 3 and 4)
-      //level2_prob_choice2 = inv_logit( beta2[i] * ( v_mf[4] - v_mf[3] ) );
-      //level2_choice_01 ~ bernoulli( level2_prob_choice2 );
+      level2_prob_choice2 = inv_logit( beta2[i] * ( v_mf[4] - v_mf[3] ) );
+      level2_choice_01 ~ bernoulli( level2_prob_choice2 );
 
       // Value updates after observing the level-2 choice and reward
       // Update level-1 MF for the chosen first-stage stimulus using chosen level2 value
@@ -207,13 +207,13 @@ generated quantities {
       log_lik[i,t] += bernoulli_lpmf( level1_choice_01 | level1_prob_choice2 );
 
       // level 2 choice probability
-      //level2_choice_01 = level2_choice[i,t] - 1;
-      //level2_prob_choice2 = inv_logit( beta2[i] * ( v_mf[4] - v_mf[3] ) );
-      //log_lik[i,t] += bernoulli_lpmf( level2_choice_01 | level2_prob_choice2 );
+      level2_choice_01 = level2_choice[i,t] - 1;
+      level2_prob_choice2 = inv_logit( beta2[i] * ( v_mf[4] - v_mf[3] ) );
+      log_lik[i,t] += bernoulli_lpmf( level2_choice_01 | level2_prob_choice2 );
 
       // posterior predictive draws
       y_pred_step1[i,t] = bernoulli_rng(level1_prob_choice2);
-      //y_pred_step2[i,t] = bernoulli_rng(level2_prob_choice2);
+      y_pred_step2[i,t] = bernoulli_rng(level2_prob_choice2);
 
       // store RPEs (before update! )
       mf_RPE[i, t]  = reward[i, t] - v_mf[level1_choice[i, t]];
