@@ -2,9 +2,8 @@
 // -----------------------------------------------------------
 // Taskstructure
 // - level1_choice: 1 or 2 (first-stage left/right)
-// - level2_choice: 1 or 2 (only two second-stage choices(stages) in total, each left/right goes to one choice on second stage)
-// - v_mf -> 4 elements: 1-2 correspond to level-1
-//   action values, indices 3-4 correspond to the two second-stage
+// - level2_choice: 1 or 2 (only two second-stage choices(stages) in total, each left/right goes to one stage on second stage)
+// - v_mf -> 4 elements: 1-2 correspond to level-1 action values, indices 3-4 correspond to the two second-stage
 //   action values.
 //
 
@@ -16,7 +15,7 @@ data {
   int<lower=1> T;                          // maximum number of trials
   int<lower=1, upper=T> Tsubj[N];          // number of trials for each subject
   int<lower=1, upper=2> level1_choice[N,T]; // 1:left, 2:right  (first-stage)
-  int<lower=1, upper=2> level2_choice[N,T]; // 1 or 2 (I CHANGED THIS: now reduced second-stage choices)
+  int<lower=1, upper=2> level2_choice[N,T]; // 1 or 2 (now reduced second-stage choices)
   int<lower=0, upper=1> reward[N,T];      // reward observed at level 2 (0/1)
   real<lower=0, upper=1> trans_prob;      // transition probability (prob of common transition)
 }
@@ -26,16 +25,16 @@ transformed data {
 }
 
 parameters {
-  // Group-level parameters: reduced to 5 (removed beta2)
+  // Group-level parameters: I CHANGED THIS: reduced to 5 (removed beta2)
   vector[5] mu_pr;            
   vector<lower=0>[5] sigma;   
 
   // Subject-level raw (standard normal) 
-  vector[N] a1_pr;    // alpha1 (level-1 learning rate)
-  vector[N] beta1_pr; // beta1 (inverse temperature, level 1)
-  vector[N] a2_pr;    // alpha2 (level-2 learning rate)
-  vector[N] pi_pr;    // perseveration parameter
-  vector[N] w_pr;     // model-based weight
+  vector[N] a1_pr;    // raw for alpha1 (level-1 learning rate)
+  vector[N] beta1_pr; // raw for beta1 (inverse temperature, level 1)
+  vector[N] a2_pr;    // raw for alpha2 (level-2 learning rate)
+  vector[N] pi_pr;    // raw for perseveration parameter
+  vector[N] w_pr;     // raw for model-based weight
 }
 
 transformed parameters {
@@ -51,7 +50,7 @@ transformed parameters {
     a1[i]    = Phi_approx( mu_pr[1] + sigma[1] * a1_pr[i] );
     beta1[i] = exp( mu_pr[2] + sigma[2] * beta1_pr[i] );
     a2[i]    = Phi_approx( mu_pr[3] + sigma[3] * a2_pr[i] );
-    pi[i]    = Phi_approx( mu_pr[4] + sigma[4] * pi_pr[i] ) * 5; // keep same scaling
+    pi[i]    = Phi_approx( mu_pr[4] + sigma[4] * pi_pr[i] ) * 5; 
     w[i]     = Phi_approx( mu_pr[5] + sigma[5] * w_pr[i] );
   }
 }
@@ -61,8 +60,9 @@ model {
   mu_pr  ~ normal(0, 1);
   sigma  ~ normal(0, 0.2);
 
-  // Priors for subject-level raw parameters (standard normal)
+  // Priors for subject-level raw parameters (standard normal), I CHANGED THIS: reduced to 5 (removed beta2)
   a1_pr     ~ normal(0, 1);
+  beta1_pr  ~ normal(0, 1);
   a2_pr     ~ normal(0, 1);
   pi_pr     ~ normal(0, 1);
   w_pr      ~ normal(0, 1);
@@ -74,7 +74,7 @@ model {
     vector[4] v_mf;      // model-free values: 1-2 -> level1; 3-4 -> level2 (reduced)
     vector[2] v_hybrid;  // hybrid values for level 1 (weighted by w)
 
-    // helper variables
+    // helper variables, I CHANGED THIS: removed level2 choice probability
     real level1_prob_choice2;
     int level1_choice_01;
 
@@ -84,7 +84,7 @@ model {
     v_hybrid  = rep_vector(0.0, 2);
 
     for (t in 1:Tsubj[i]) {
-      // Model-based value computation -> I CHANGED THIS
+      // Model-based value computation -> WE CHANGED THIS
       // choice 1: common → state A (v_mf[3]), rare → state B (v_mf[4])
       v_mb[1] = trans_prob * v_mf[3] + (1 - trans_prob) * v_mf[4];
       // choice 2: common → state B (v_mf[4]), rare → state A (v_mf[3])
@@ -106,6 +106,8 @@ model {
       // observation model for level 1 choice
       level1_choice_01 ~ bernoulli( level1_prob_choice2 );
 
+      // I CHANGED THIS - Level-2 choice probability & likelihood removed
+
       // Value updates after observing the level-2 choice and reward
       // Update level-1 MF for the chosen first-stage stimulus using chosen level2 value
       v_mf[level1_choice[i,t]] += a1[i] * ( v_mf[2 + level2_choice[i,t]] - v_mf[level1_choice[i,t]] );
@@ -113,7 +115,6 @@ model {
       // Update the chosen level-2 MF value with the experienced reward
       v_mf[2 + level2_choice[i,t]] += a2[i] * ( reward[i,t] - v_mf[2 + level2_choice[i,t]] );
 
-      // Update level-1 MF with direct reward bootstrap (MAYBE REMOVE THIS LINE - SEEMS like a double update)
       v_mf[level1_choice[i,t]] += a1[i] * ( reward[i,t] - v_mf[2 + level2_choice[i,t]] );
 
     } 
@@ -122,7 +123,7 @@ model {
 
 // posterior predictive, RPE regressors, log-lik
 generated quantities {
-  // population-level (transformed) means (those for reporting!)
+  // population-level (transformed) means (those for reporting!) - I CHANGED THIS: reduced to 5 (removed beta2)
   real<lower=0,upper=1> mu_a1;
   real<lower=0>         mu_beta1;
   real<lower=0,upper=1> mu_a2;
@@ -137,8 +138,9 @@ generated quantities {
   real log_lik[N,T];      // subject log-likelihood (sum across trials)
 
   real y_pred_step1[N, T]; // posterior predictive choices level 1 (0/1 stored as -1/1? we store 0/1)
-
-  // initialize outputs to safe values
+  // I CHANGED THIS: removed level2 choice
+  
+  // initialize outputs to safe values - I CHANGED THIS: removed level2 choice
   for (i in 1:N) {
     for (t in 1:T) {
       log_lik[i,t] = 0;
@@ -149,14 +151,14 @@ generated quantities {
     }
   }
 
-  // transformed population means
+  // transformed population means - I CHANGED THIS: reduced to 5 (removed beta2)
   mu_a1    = Phi_approx( mu_pr[1] );
   mu_beta1 = exp( mu_pr[2] );
   mu_a2    = Phi_approx( mu_pr[3] );
   mu_pi    = Phi_approx( mu_pr[4] ) * 5;
   mu_w     = Phi_approx( mu_pr[5] );
 
-  { // local block for generating trialwise regressors and predictive draws
+  { // local block for generating trialwise regressors and predictive draws - I CHANGED THIS: removed level2 choice
     for (i in 1:N) {
       vector[2] v_mb;
       vector[4] v_mf;
@@ -186,6 +188,8 @@ generated quantities {
       else
       level1_prob_choice2 = inv_logit( beta1[i] * ( v_hybrid[2] - v_hybrid[1] ) + pi[i] * ( 2 * level1_choice[i,t-1] - 3 ) );
       log_lik[i,t] += bernoulli_lpmf( level1_choice_01 | level1_prob_choice2 );
+
+      // I CHANGED THIS: removed level2 choice
 
       // posterior predictive draws
       y_pred_step1[i,t] = bernoulli_rng(level1_prob_choice2);
