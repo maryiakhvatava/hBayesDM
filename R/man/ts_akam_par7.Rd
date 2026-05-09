@@ -55,7 +55,7 @@ to \code{FALSE}.}
 
 \item{inc_postpred}{Include trial-level posterior predictive simulations in model output (may greatly increase file
 size). Defaults to \code{FALSE}.
-If set to \code{TRUE}, it includes: "y_pred_step1", "y_pred_step2"}
+If set to \code{TRUE}, it includes: "y_pred_step1"}
 
 \item{adapt_delta}{Floating point value representing the target acceptance probability of a new
 sample in the MCMC chain. Must be between 0 and 1. See \bold{Details} below.}
@@ -97,7 +97,7 @@ A class "hBayesDM" object \code{modelData} with the following components:
 }
 \description{
 Hierarchical Bayesian Modeling of the Two-Step Task using Hybrid Model for reduced task.
-It has the following parameters: \code{a1} (learning rate in stage 1), \code{beta1} (inverse temperature in stage 1), \code{a2} (learning rate in stage 2), \code{beta2} (inverse temperature in stage 2), \code{pi} (perseverance), \code{w} (model-based weight), \code{lambda} (eligibility trace).
+It has the following parameters: \code{a1} (learning rate in stage 1), \code{beta1} (inverse temperature in stage 1), \code{a2} (learning rate in stage 2), \code{pi} (perseverance), \code{w} (model-based weight), \code{lambda} (eligibility trace).
 
 \itemize{
   \item \strong{Task}: Two-Step Task (Daw et al., 2011)

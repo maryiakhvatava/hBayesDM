@@ -10,7 +10,7 @@
 #' @templateVar DATA_COLUMNS "subjID", "level1_choice", "level2_choice", "reward"
 #' @templateVar PARAMETERS \code{a} (learning rate for both stages 1 & 2), \code{beta} (inverse temperature for both stages 1 & 2), \code{pi} (perseverance), \code{w} (model-based weight)
 #' @templateVar REGRESSORS "mf_RPE", "mb_RPE", "mfb_RPE"
-#' @templateVar POSTPREDS "y_pred_step1", "y_pred_step2"
+#' @templateVar POSTPREDS "y_pred_step1"
 #' @templateVar LENGTH_DATA_COLUMNS 4
 #' @templateVar DETAILS_DATA_1 \item{subjID}{A unique identifier for each subject in the data-set.}
 #' @templateVar DETAILS_DATA_2 \item{level1_choice}{Choice made for Level (Stage) 1 (1: stimulus 1, 2: stimulus 2).}
@@ -51,5 +51,5 @@ ts_akam_par4_trial <- hBayesDM_model(
     "mb_RPE" = 2,
     "mfb_RPE" = 2
   ),
-  postpreds       = c("y_pred_step1", "y_pred_step2"),
+  postpreds       = c("y_pred_step1"),
   preprocess_func = ts_preprocess_func)

@@ -5,6 +5,7 @@ task_name:
   - Daw, N. D., Gershman, S. J., Seymour, B., Ben Seymour, Dayan, P., & Dolan, R.
       J. (2011). Model-Based Influences on Humans' Choices and Striatal Prediction Errors.
       Neuron, 69(6), 1204-1215. https://doi.org/10.1016/j.neuron.2011.02.027
+
 model_name:
   code: akam_par6_trial
   desc: Hybrid Model for reduced task
@@ -41,9 +42,6 @@ parameters:
   a2:
     desc: learning rate in stage 2
     info: [0, 0.5, 1]
-  beta2:
-    desc: inverse temperature in stage 2
-    info: [0, 1, Inf]
   pi:
     desc: perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)
     info: [0, 1, 5]
@@ -56,7 +54,6 @@ regressors:
   mfb_RPE: 2
 postpreds:
   - y_pred_step1
-  - y_pred_step2
 additional_args:
   - code: trans_prob
     default: 0.7

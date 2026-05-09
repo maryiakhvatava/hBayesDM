@@ -55,7 +55,7 @@ to \code{FALSE}.}
 
 \item{inc_postpred}{Include trial-level posterior predictive simulations in model output (may greatly increase file
 size). Defaults to \code{FALSE}.
-If set to \code{TRUE}, it includes: "y_pred_step1", "y_pred_step2"}
+If set to \code{TRUE}, it includes: "y_pred_step1"}
 
 \item{adapt_delta}{Floating point value representing the target acceptance probability of a new
 sample in the MCMC chain. Must be between 0 and 1. See \bold{Details} below.}

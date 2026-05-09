@@ -33,7 +33,7 @@ class TsAkamPar4Trial(TaskModel):
                 ('mb_RPE', 2),
                 ('mfb_RPE', 2),
             ]),
-            postpreds=['y_pred_step1', 'y_pred_step2'],
+            postpreds=['y_pred_step1'],
             parameters_desc=OrderedDict([
                 ('a', 'learning rate for both stages 1 & 2'),
                 ('beta', 'inverse temperature for both stages 1 & 2'),

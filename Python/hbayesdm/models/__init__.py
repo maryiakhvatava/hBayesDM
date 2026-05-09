@@ -58,8 +58,8 @@ from ._rdt_happiness import rdt_happiness
 from ._task2AFC_sdt import task2AFC_sdt
 from ._ts_akam_par4 import ts_akam_par4
 from ._ts_akam_par4_trial import ts_akam_par4_trial
-from ._ts_akam_par5_trial import ts_akam_par5_trial
 from ._ts_akam_par6 import ts_akam_par6
+from ._ts_akam_par6_trial import ts_akam_par6_trial
 from ._ts_akam_par6_trial import ts_akam_par6_trial
 from ._ts_akam_par7 import ts_akam_par7
 from ._ts_akam_par7_trial import ts_akam_par7_trial
@@ -134,8 +134,8 @@ __all__ = [
     'task2AFC_sdt',
     'ts_akam_par4',
     'ts_akam_par4_trial',
-    'ts_akam_par5_trial',
     'ts_akam_par6',
+    'ts_akam_par6_trial',
     'ts_akam_par6_trial',
     'ts_akam_par7',
     'ts_akam_par7_trial',

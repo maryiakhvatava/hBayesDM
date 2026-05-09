@@ -26,7 +26,6 @@ class TsAkamPar6Trial(TaskModel):
                 ('a1', (0, 0.5, 1)),
                 ('beta1', (0, 1, Inf)),
                 ('a2', (0, 0.5, 1)),
-                ('beta2', (0, 1, Inf)),
                 ('pi', (0, 1, 5)),
                 ('w', (0, 0.5, 1)),
             ]),
@@ -35,12 +34,11 @@ class TsAkamPar6Trial(TaskModel):
                 ('mb_RPE', 2),
                 ('mfb_RPE', 2),
             ]),
-            postpreds=['y_pred_step1', 'y_pred_step2'],
+            postpreds=['y_pred_step1'],
             parameters_desc=OrderedDict([
                 ('a1', 'learning rate in stage 1'),
                 ('beta1', 'inverse temperature in stage 1'),
                 ('a2', 'learning rate in stage 2'),
-                ('beta2', 'inverse temperature in stage 2'),
                 ('pi', 'perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)'),
                 ('w', 'model-based weight'),
             ]),
@@ -76,7 +74,7 @@ def ts_akam_par6_trial(
 
     Hierarchical Bayesian Modeling of the Two-Step Task [Daw2011]_
     using Hybrid Model for reduced task [Akam2015]_ with the following parameters:
-    "a1" (learning rate in stage 1), "beta1" (inverse temperature in stage 1), "a2" (learning rate in stage 2), "beta2" (inverse temperature in stage 2), "pi" (perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)), "w" (model-based weight).
+    "a1" (learning rate in stage 1), "beta1" (inverse temperature in stage 1), "a2" (learning rate in stage 2), "pi" (perseverance (unsigned, if signed, so positive and negative/stay and switch, put to -5, 0, 5)), "w" (model-based weight).
 
     
 
